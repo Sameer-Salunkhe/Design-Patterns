@@ -1,0 +1,142 @@
+
+#include <stdio.h>
+#include <iostream>
+#include <list>
+using namespace std;
+#include <typeinfo>  // used to fetch pointer base class
+
+// delared both the Interface upfront as both is having concreate class interdependent on them.
+// 1. for it->update(); as it is calling update of other one
+// 2. for typeid(*obj).name() as obj is of observable interface.
+
+class observer{    
+  
+  public:
+  virtual ~observer(){}  // to safely release memory
+  virtual void update()=0;
+};
+
+class observable{
+  public:
+  
+  virtual void add(observer* obj)=0;
+  virtual void removefrom(observer* obj)=0;
+  virtual void notify()=0;
+  virtual void setdata(int value)=0;
+ virtual ~observable(){}  // to safely release memory
+};
+
+class IphoneObservable:public observable{
+  public:
+  int data=0;
+  list<observer*> observerobj;
+  void add(observer* obj)
+  {
+      observerobj.push_back(obj);
+      cout << "IphoneObservable added in List -->" << endl ; 
+  }
+  void removefrom(observer* obj)
+  {
+     observerobj.remove(obj);
+      //cout << "Observer removed from List -->" << endl ; 
+  }
+  void notify()
+  {
+    for(auto it:observerobj)
+    {
+        it->update();
+    }
+  }
+  void setdata(int value)
+  {
+      if(data==0) notify();
+      data=value;
+  }
+};
+
+class Emailobserver:public observer{
+  public:
+  string mailid;
+  observable* obj;
+  Emailobserver(string mail,observable* obj1):obj(obj1),mailid(mail){};
+  void update()
+  {
+    sendmail(mailid);                     
+  }
+  void sendmail(string input)
+  {
+     cout << "Send E-Mail To -->" << input << " " << typeid(*obj).name() << endl; 
+  }
+};
+
+class Mobileobserver:public observer{
+  public:
+  string mailid;
+  observable* obj;
+  Mobileobserver(string mail,observable* obj1):obj(obj1),mailid(mail){};
+  void update()
+  {
+    sendmail(mailid);                     
+  }
+  void sendmail(string input)
+  {
+     cout << "Send MOBILE SMS To -->" << input << " " << typeid(*obj).name() << endl; 
+  }
+};
+
+class MixerObservable:public observable{
+  
+  public:
+  int data=0;
+  list<observer*> observerobj;
+  void add(observer* obj)
+  {
+      observerobj.push_back(obj);
+      cout << "MixerObservable added in List -->" << endl ; 
+  }
+  void removefrom(observer* obj)
+  {
+     observerobj.remove(obj);
+      //cout << "Observer removed from List -->" << endl ; 
+  }
+  void notify()
+  {
+    for(auto it:observerobj)
+    {
+        it->update();
+    }
+  }
+  void setdata(int value)
+  {
+      if(data==0) notify();
+      data=value;
+  }
+};
+
+int main()
+{
+    observable* iphone=new IphoneObservable();
+     observable* mixer=new MixerObservable();
+    observer* observer1=new Mobileobserver("observer1@gmail.com",iphone);
+    observer* observer2=new Emailobserver("observer2@gmail.com",mixer);
+    observer* observer3=new Emailobserver("observer3@gmail.com",iphone);
+    
+    //iphone=new MixerObservable();
+    iphone->add(observer1);
+    iphone->add(observer2);
+    iphone->add(observer3);
+   
+    iphone->setdata(100);
+    
+    mixer->add(observer1);
+    mixer->add(observer2);
+    mixer->add(observer3);
+    
+    mixer->setdata(100);
+
+    delete iphone;
+    delete mixer;
+    delete observer1,2,3;
+    return 0;
+}
+
