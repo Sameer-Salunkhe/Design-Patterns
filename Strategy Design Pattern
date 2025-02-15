@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+
+class stratergy{
+  
+  public:
+  
+  virtual void drive()=0;
+};
+
+class manualdrive:public stratergy{
+    public:
+    void drive()
+    {
+        cout << "MANUAL DRIVE CALLED " << endl;
+    }
+};
+
+class automaticdrive:public stratergy{
+    public:
+    void drive()
+    {
+        cout << "AUTOMATIC DRIVE CALLED " << endl;
+    }
+};
+
+class intermediate{
+  public:
+  stratergy *obj=NULL;
+  
+  intermediate(stratergy* obj1):obj(obj1){};
+  
+  void drive()
+  {
+      obj->drive();
+  }
+};
+
+class oldcar:public intermediate{
+
+public:
+    oldcar():intermediate(new manualdrive())
+    {
+         cout << "OLD CAR CALLED " << endl;
+    }
+    
+};
+
+class newcar:public intermediate{
+
+public:
+    newcar():intermediate(new automaticdrive())
+    {
+         cout << "NEW CAR CALLED " << endl;
+    }
+    
+};
+int main()
+{
+   intermediate *ptr=new oldcar();
+   ptr->drive();
+   ptr=new newcar();
+   ptr->drive();
+    return 0;
+}
