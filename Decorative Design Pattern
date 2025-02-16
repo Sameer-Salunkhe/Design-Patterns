@@ -1,0 +1,70 @@
+
+#include <stdio.h>
+#include <iostream>
+#include <list>
+using namespace std;
+#include <typeinfo>
+
+// BasePizza is Base interface
+// Margarita & FarmDelight concrete classes which we consider as base over which we will add decorations and this should be only ONE.
+// decorator class has isA and hasA relationship with base class. WHY isA relationship required to achieve this line [BasePizza*ptr=new Mushroom(new Cheese(new Margarita()));]
+// Cheese and Mushroom are child for decorative interface where we can many more actions 
+
+
+class BasePizza{
+   public: 
+virtual int cost()=0;
+virtual~BasePizza(){}
+};
+
+class Margarita:public BasePizza{
+public:
+   int cost(){
+   return 100;
+   }
+};
+
+class FarmDelight:public BasePizza{
+public:
+   int cost(){
+   return 200;
+   }
+};
+
+class decorator:public BasePizza{
+  public:
+  BasePizza* obj;
+  decorator(BasePizza* obj1):obj(obj1){}
+  virtual~decorator(){}
+  //virtual int cost()=0;
+};
+
+class Cheese:public decorator{
+    //BasePizza* obj;
+   public:
+   Cheese(BasePizza* obj1):decorator(obj1){}
+   int cost(){
+   int val= obj->cost()+ 5;
+   return val;
+   }
+};
+
+class Mushroom:public decorator{
+   public:
+   Mushroom(BasePizza* obj1):decorator(obj1){}
+   int cost(){
+   int val= obj->cost()+ 7;
+   return val;
+   }
+};
+
+int main(){
+
+BasePizza*ptr=new Mushroom(new Cheese(new Margarita()));
+
+//decorator *ptr1=new Mushroom(new Cheese(ptr));
+int x= ptr->cost();
+cout <<"Cost for pizza =" << x << endl;
+return x;
+}
+
