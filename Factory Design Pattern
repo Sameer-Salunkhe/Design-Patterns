@@ -1,0 +1,54 @@
+
+#include <stdio.h>
+#include <iostream>
+#include <list>
+using namespace std;
+#include <typeinfo>
+
+// It is used when we want to create the object based on some conditions
+// This will help to hide data creation logic in main function
+
+
+class shape{
+  public:
+  virtual void draw()=0;
+};
+
+class circle:public shape{
+  public:
+  void draw()
+  {
+      cout << "DRAW CIRCLE" << endl;
+  }
+};
+
+class square:public shape{
+  public:
+  void draw()
+  {
+      cout << "DRAW SQUARE" << endl;
+  }
+};
+
+class factory{
+  public:
+  static shape* getshape(string name)
+  {
+      if(name=="Circle")
+      return new circle();
+      else if (name=="Square")
+      return new square;
+      //else
+      return NULL;
+  }
+};
+
+int main(){
+
+//factory *factoryptr=new factory();
+shape *shapeptr=factory::getshape("Circle");
+shapeptr->draw();
+delete shapeptr;
+return 0;
+}
+
