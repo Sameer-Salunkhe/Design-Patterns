@@ -1,0 +1,70 @@
+// singleton class
+// 1. private constructor to eliminate new singleton()
+// 2. Static function and memeber variable to restric object creation outside the class
+// 3. delete copy constructor and operator on order to maintain single instance of the class i.e singleton obj1=obj2; return obj2;
+
+
+class singleton{
+                                                                                                          
+  private:
+  
+  singleton(){}
+  singleton(const singleton&) = delete;
+  singleton operator=(const singleton&) = delete;
+
+  public:
+  static singleton& getobject(){         // Eager initialisation 
+      return obj1;
+  }
+
+static singleton& getobject(){           // Lazy initialisation 
+      static singleton obj1;
+      return obj1;
+  }
+  
+  void draw(){
+      cout << "Call to Draw" << endl;
+  }
+};
+
+singleton singleton::obj1;   // Eager initialisation 
+
+int main()
+{
+    singleton::getobject().draw();
+    return 0;
+}
+
+// Lazy initialisation Using pointer
+
+class singleton{
+  
+  private:
+  
+  singleton(){}
+  singleton(const singleton&) = delete;
+  singleton operator=(const singleton&) = delete;
+  static singleton* instance;
+  public:
+  
+  static singleton* getobject(){
+     if(instance==nullptr)
+     {
+         instance=new singleton();
+         
+     }
+      return new singleton();
+  }
+  
+  void draw(){
+      cout << "Call to Draw" << endl;
+  }
+};
+
+singleton* singleton::instance=nullptr;
+
+int main()
+{
+    singleton::getobject()->draw();
+    return 0;
+}
