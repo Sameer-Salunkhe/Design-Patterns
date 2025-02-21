@@ -1,0 +1,45 @@
+// proxy act as a middleman between client and lets say database
+
+
+class website{
+
+public:
+
+  virtual void redirect()=0;
+  
+};
+
+class server:public website{
+    
+    public:
+    void redirect(){
+        cout << "WEBSITE is ALLOWED" << endl;
+    }
+};
+
+class proxyserver:public website{
+    private:
+    server _instance;
+    string _s;
+    
+    public:
+    proxyserver(string s):_s(s){}
+    
+    void redirect(){
+        if(_s=="ALLOW"){
+            _instance.redirect();
+        }
+        else
+        {
+            cout << "WEBSITE is NOT-ALLOWED" << endl;
+        }
+    }
+};
+
+
+int main()
+{
+    proxyserver w1("ALLOW");
+    w1.redirect();
+    return 0;
+}
