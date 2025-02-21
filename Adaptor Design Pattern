@@ -1,0 +1,47 @@
+// Adapter act as bridge between two different interface 
+// It is used when it is required to communicate between legacy code modern code
+// weight kg to pound , xml to json file converter
+
+class adapterinterface{
+  public:
+  
+  virtual void getweight()=0;
+};
+
+class adaptee{
+    
+    public:
+    
+    int wightinpound(){
+        
+        return 50;
+    }
+};
+
+class adaptor:public adapterinterface{
+    
+    adaptee _instance;
+    public:
+    adaptor(adaptee obj): _instance(obj) {}
+    
+    void getweight() override{
+        
+        int wt=convertkgtopound(_instance.wightinpound());
+        cout << "Weight in Pound = " << wt << endl;
+    }
+    
+    int convertkgtopound (int pound){
+        
+        return pound*0.8;
+    }
+};
+
+
+int main()
+{
+    adaptee obj;
+    adapterinterface *ptr= new adaptor(obj);
+    ptr->getweight();
+    delete ptr;
+    return 0;
+}
