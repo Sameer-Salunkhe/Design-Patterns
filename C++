@@ -6,8 +6,8 @@ MACRO in C++
 #define ADD_TWO_NUMBERS      // IF WE comment out this line else statement will get executed
 #ifdef ADD_TWO_NUMBERS
 
-  # define Add(x,y) (x+y)
-  
+  # define Add(x,y) (x+y)   // #define Add(x, y) ((static_cast<int>(x)) + (static_cast<int>(y)))   --- To make sure a abd b will be the integers below line is the good way to do it 
+                            // ((static_assert(std::is_integral<decltype(x)>::value, "x must be an integer"), static_assert(std::is_integral<decltype(y)>::value, "y must be an integer")), (x + y)) 
 #else
  
   # define Add(x,y) (x-y)
