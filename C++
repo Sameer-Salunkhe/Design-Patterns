@@ -1,0 +1,27 @@
+
+----------------------------------  MACRO  ----------------------------------------------------
+
+MACRO in C++
+
+#define ADD_TWO_NUMBERS      // IF WE comment out this line else statement will get executed
+#ifdef ADD_TWO_NUMBERS
+
+  # define Add(x,y) (x+y)
+  
+#else
+ 
+  # define Add(x,y) (x-y)
+
+#endif
+
+int main()
+{
+    
+    int x = Add(5,10);
+    
+    cout << x << endl;
+
+    return 0;
+}
+
+----------------------------------  MACRO  ----------------------------------------------------
