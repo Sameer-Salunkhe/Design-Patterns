@@ -41,7 +41,7 @@ class intermediate{
 class oldcar:public intermediate{
 
 public:
-    oldcar():intermediate(new manualdrive())
+    oldcar(stratergy *obj):intermediate(obj)
     {
          cout << "OLD CAR CALLED " << endl;
     }
@@ -51,7 +51,7 @@ public:
 class newcar:public intermediate{
 
 public:
-    newcar():intermediate(new automaticdrive())
+    newcar(stratergy *obj):intermediate(obj)
     {
          cout << "NEW CAR CALLED " << endl;
     }
@@ -59,9 +59,9 @@ public:
 };
 int main()
 {
-   intermediate *ptr=new oldcar();
+   intermediate *ptr=new oldcar(new manualdrive());
    ptr->drive();
-   ptr=new newcar();
+   ptr=new newcar(new automaticdrive());
    ptr->drive();
     return 0;
 }
