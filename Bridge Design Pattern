@@ -1,0 +1,79 @@
+// More or less similar to stratergy design pattern but intent is different 
+// Here we make abstraction and implementation independent
+// We can create as many types of restaurents and as many type of pizza 
+// We just add 1 bridge in between them 
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Pizza{
+    public:
+    
+    virtual void checkquality()  =0;
+    virtual void makepizza()=0;
+};
+
+class vegpizza: public Pizza{
+    public:
+    
+    void checkquality()override{
+        cout << "Quality of VEGPizza" << endl;
+    }
+    
+     void makepizza()override{
+        cout << "Making of VEGPizza" << endl;
+    }
+};
+
+class chickenpizza: public Pizza{
+    public:
+    
+     void checkquality() override{
+        cout << "Quality of ChickenPizza" << endl;
+    }
+    
+     void makepizza() override{
+        cout << "Making of ChickenPizza" << endl;
+    }
+};
+
+class Restaurent{
+  
+  public:
+
+  virtual void style()=0;
+  virtual ~Restaurent()=0;
+  
+};
+Restaurent::~Restaurent(){}
+
+class american: public Restaurent{
+    Pizza *object;  
+    public:
+    american(Pizza *obj_):object(obj_){}
+    void style() override{
+        object -> checkquality();
+        cout << "American Making style" << endl;
+    }
+    ~american(){delete object;}
+};
+
+class italian: public Restaurent{
+    Pizza *object;  
+    public:
+    italian(Pizza *obj_):object(obj_){}
+    void style() override{
+        object -> checkquality();
+        cout << "Italian Making style" << endl;
+    }
+    ~italian(){delete object;}
+};
+
+int main()
+{
+    Restaurent *pizzaobject= new american(new chickenpizza());
+    pizzaobject->style();
+    delete pizzaobject;
+    return 0;
+}
