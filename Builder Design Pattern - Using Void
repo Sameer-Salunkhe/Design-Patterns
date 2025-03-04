@@ -1,0 +1,133 @@
+// This pattern is used when we need to build complex object with many parameters.
+// In this case student object is having many different parameter.
+// Builder is use to avoid long constructor in student class or also it avoides many small small constructor.
+// If builder not there then student constructior will look like student(string name,int age,int rollnumber,list<string> subject) ans so on...
+// But now we just pass the builder constructor object.
+// Director is used to call the setter method in a particular way it controls which method will get called.
+
+// Good practise is to build small small builder objects and then return the student object finally, but here we used void setter method because of which I need to call method one by one. 
+              builder.setname("Engineer");
+              builder.setage(22);
+              builder.setrollnumber(50);
+              builder.setsubject();
+             return builder.Build();
+
+// Using retuen object method chanining can be acheieved 
+             return builder.setname("Engineer")
+                      .setage(22)
+                      .setrollnumber(50)
+                      .setsubject()
+                      .Build();
+
+#include <stdio.h>
+#include <iostream>
+#include <list>
+using namespace std;
+
+class studentbuilder;  // FORWARD DECLARATION                             
+
+class student{
+  private:
+  
+  string _name;
+  int _age;
+  int _rollnumber;
+  list<string> _subject;
+  
+  public:
+  student(const studentbuilder& object);
+  
+  void studentdetails(){
+  
+      cout << "Student details =" << endl << "Name " <<  _name << endl << "Age " << _age << endl << "Roll Number " << _rollnumber << endl << "Subjects = " ; for (auto it:_subject) {cout << " " << it ;} cout <<endl;
+  }
+};
+
+class studentbuilder{
+ 
+  protected:
+  
+  string _name;
+  int _age;                                     
+  int _rollnumber;
+  list<string> _subject;
+  
+  public:
+  
+   void setname(string name){
+       _name=name;
+  }
+  
+   void setage(int age){
+       _age=age;
+  }
+  
+   void setrollnumber(int rollnumber){
+       _rollnumber=rollnumber;
+  }
+  
+  virtual void setsubject()=0;   // Pure Virtual Function 
+  
+  student Build(){
+        return student(*this);
+  }
+  
+  friend class student;
+};
+
+class engstudentbuilder:public studentbuilder{
+  public:
+  void setsubject() override{
+    _subject.push_back("OOPS");
+    _subject.push_back("CS");
+    _subject.push_back("Mech");
+  }
+};
+
+class mbastudentbuilder:public studentbuilder{
+  public:
+  void setsubject() override{
+  _subject.push_back("M1");
+  _subject.push_back("M2");
+  _subject.push_back("M3");
+  _subject.push_back("M4");
+  }
+};
+
+class director{
+    
+    public:
+    static student createengstudent(engstudentbuilder& builder) {
+              builder.setname("Engineer");
+              builder.setage(22);
+              builder.setrollnumber(50);
+              builder.setsubject();
+             return builder.Build();
+    }
+
+    static student creatembastudent(mbastudentbuilder& builder) {
+                builder.setname("MBA");
+                builder.setage(30);
+                builder.setrollnumber(100);
+                builder.setsubject();
+              return  builder.Build();
+    }
+};
+
+student::student(const studentbuilder& object){                      // **Student Constructor**            
+      _name= object._name;
+      _age= object._age;
+      _rollnumber= object._rollnumber;
+      _subject= object._subject;
+  }
+
+int main(){
+    
+    mbastudentbuilder builderobject;
+    student studentobject1= director::creatembastudent(builderobject);
+    studentobject1.studentdetails();
+    
+    engstudentbuilder builderobject1;
+    student studentobject2= director::createengstudent(builderobject1);
+    studentobject2.studentdetails();
+}
