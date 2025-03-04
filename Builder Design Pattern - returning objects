@@ -1,4 +1,23 @@
-//
+// This pattern is used when we need to build complex object with many parameters.
+// In this case student object is having many different parameter.
+// Builder is use to avoid long constructor in student class or also it avoides many small small constructor.
+// If builder not there then student constructior will look like student(string name,int age,int rollnumber,list<string> subject) ans so on...
+// But now we just pass the builder constructor object.
+// Director is used to call the setter method in a particular way it controls which method will get called.
+
+// Good practise is to build small small builder objects and then return the student object finally, but here we used void setter method because of which I need to call method one by one. 
+              builder.setname("Engineer");
+              builder.setage(22);
+              builder.setrollnumber(50);
+              builder.setsubject();
+             return builder.Build();
+
+// Using retuen object METHOD CHAINING can be acheieved 
+             return builder.setname("Engineer")
+                      .setage(22)
+                      .setrollnumber(50)
+                      .setsubject()
+                      .Build();
 
 
 #include <stdio.h>
