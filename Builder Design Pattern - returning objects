@@ -1,0 +1,117 @@
+//
+
+
+#include <stdio.h>
+#include <iostream>
+#include <list>
+using namespace std;
+
+class StudentBuilder;
+
+class Student{
+  private:
+  string _name;
+  int _age;
+  int _rollno;
+  list<string> _subject;
+  
+  public:
+  
+  Student(StudentBuilder& obj);
+  
+  void studentdetails(){
+  
+      cout << "Student details =" << endl << "Name " <<  _name << endl << "Age " << _age << endl << "Roll Number " << _rollno << endl << "Subjects = " ; for (auto it:_subject) {cout << " " << it ;} cout <<endl;
+  }
+};
+
+class StudentBuilder{
+  protected:
+  string _name;
+  int _age;
+  int _rollno;
+  list<string> _subject;
+  
+  public:
+  
+  StudentBuilder& setname(const string& name){
+      _name=name;
+      return *this;
+  }
+  
+  StudentBuilder& setage(const int& age){
+      _age=age;
+      return *this;
+  }
+  
+   StudentBuilder& setrollno(const int& rollno){
+      _rollno=rollno;
+      return *this;
+  }
+  
+   Student Build(){
+       return Student(*this);
+  }
+  
+  virtual void setsubject()=0;
+  
+  friend class Student;
+};
+
+class EnginneringBuilder:public StudentBuilder{
+    public:
+  void setsubject() override{
+    _subject.push_back("OOPS");
+    _subject.push_back("CS");
+    _subject.push_back("Mech");
+  }
+};
+
+class MBABuilder:public StudentBuilder{
+    public:
+  void setsubject() override{
+  _subject.push_back("M1");
+  _subject.push_back("M2");
+  _subject.push_back("M3");
+  _subject.push_back("M4");
+  }
+};
+
+class Director{
+  public:
+    static Student CreateEngineeringStudent(EnginneringBuilder& obj){
+        return                   obj.setage(20)
+                                 .setrollno(10)
+                                 .setname("Engineer");
+                                 obj.setsubject();
+                                 obj.Build();
+    }
+    
+    static Student CreateMBAStudent(MBABuilder &obj){
+        return obj.setage(20)
+                                 .setrollno(10)
+                                 .setname("MBA");
+                                 obj.setsubject();
+                                 obj.Build();
+    }
+};
+
+Student:: Student(StudentBuilder& obj){
+    _name=obj._name;
+    _age=obj._age;
+    _rollno=obj._rollno;
+    _subject=obj._subject;
+}
+
+int main()
+{
+    EnginneringBuilder builderobject;
+    Student studentobject= Director::CreateEngineeringStudent(builderobject);
+    studentobject.studentdetails();
+    
+    MBABuilder builderobject1;
+    Student studentobject1= Director::CreateMBAStudent(builderobject1);
+    studentobject1.studentdetails();
+    
+    return 0;
+}
