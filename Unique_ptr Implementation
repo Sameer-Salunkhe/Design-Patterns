@@ -1,0 +1,92 @@
+/******************************************************************************
+
+Welcome to GDB Online.
+GDB online is an online compiler and debugger tool for C, C++, Python, Java, PHP, Ruby, Perl,
+C#, OCaml, VB, Swift, Pascal, Fortran, Haskell, Objective-C, Assembly, HTML, CSS, JS, SQLite, Prolog.
+Code, Compile, Run and Debug online from anywhere in world.
+
+*******************************************************************************/
+#include <iostream>
+
+using namespace std;
+
+template<typename T>
+
+class Uniqueptr {
+  private:
+  T* res;  // same size as raw pointer
+  
+  public:
+  
+  Uniqueptr(T* newres=nullptr):res(newres){
+      cout << "constuctor called" << endl;
+  }
+  
+  Uniqueptr(const Uniqueptr<T>& newres) = delete;
+  
+    Uniqueptr& operator =(const Uniqueptr<T>& newres) = delete;
+  
+  Uniqueptr(Uniqueptr<T>&& newres){
+      res=newres.res;
+      newres.res=nullptr;
+  }
+  
+  Uniqueptr& operator=(Uniqueptr<T>&& newres){
+      if(this !=&newres)   // to avoid case for self assignment ptr4=ptr4
+      {
+        if(res) delete res;
+        res=newres.res;
+        //delete newres;
+        newres.res=nullptr;
+      }
+      
+      return *this;
+  }
+  
+  T* operator ->(){
+      return res;
+  }
+  
+  T& operator* (){
+      return *res;
+  }
+  
+  T* get(){
+      return res;
+  }
+  
+  void reset(T* newres=nullptr){
+      if(res) delete res;
+        res=newres;
+  }
+  
+  ~Uniqueptr(){
+      if(res){
+          delete res;
+          res=nullptr;
+      } 
+  }
+  
+  void fun(){
+      cout << "VOID func" << endl;
+  }
+};
+
+int main()
+{
+    Uniqueptr<int> ptr1 (new int(2));
+    //Uniqueptr<int> ptr2 (ptr1);  // copilation error
+    //Uniqueptr<int> ptr3=ptr1;    // copilation error
+    Uniqueptr<int> ptr4 (new int(1));
+    //ptr4=ptr3;                   // copilation error
+    
+    ptr4=std::move(ptr1);    // move constuctor
+    
+    //ptr1->func();
+    cout << *ptr4;
+    ptr1.get();
+    ptr1.reset(new int(30));
+    
+    // destructor
+    return 0;
+}
