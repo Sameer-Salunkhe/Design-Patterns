@@ -1,11 +1,4 @@
-/******************************************************************************
 
-Welcome to GDB Online.
-GDB online is an online compiler and debugger tool for C, C++, Python, Java, PHP, Ruby, Perl,
-C#, OCaml, VB, Swift, Pascal, Fortran, Haskell, Objective-C, Assembly, HTML, CSS, JS, SQLite, Prolog.
-Code, Compile, Run and Debug online from anywhere in world.
-
-*******************************************************************************/
 #include <iostream>
 
 using namespace std;
@@ -84,8 +77,8 @@ int main()
     
     //ptr1->func();
     cout << *ptr4;
-    ptr1.get();
-    ptr1.reset(new int(30));
+    ptr1.get();               // return the raw pointer
+    ptr1.reset(new int(30));  // old value gets deleted and it is reset to new value here it is 30
     
     // destructor
     return 0;
