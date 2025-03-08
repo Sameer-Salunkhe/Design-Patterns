@@ -1,0 +1,128 @@
+
+#include <iostream>
+
+template<typename T>
+
+class Sharedptr{
+  private:
+  T* res;
+  int *count;   // to maintain refcount - 1) can't use int count 2) can't use static count as we create new sharedptr the existing static count will gets incresed but we need associated count
+
+  void incrementcount()
+  {
+    if(count) (*count)++;    
+  }
+  
+  void decrementcount()
+  {
+      if(count) (*count)--;
+      
+      if(*count==0)
+      {
+          if(res) delete res;
+          delete count;
+          res=nullptr;
+          count=nullptr;
+      }
+  }
+  
+  public:
+  
+  Sharedptr(T* newres=nullptr): res(newres),count(new int(1)) {}
+  
+  Sharedptr(const Sharedptr<T>& newres)
+  {                                                         
+      res=newres.res;
+      count=newres.count;
+      incrementcount();
+  }
+  
+  Sharedptr& operator=(const Sharedptr<T>& newres)
+  {
+      if(this!= &newres)
+      {
+        decrementcount();
+        res=newres.res;
+        count=newres.count;
+        incrementcount();
+      }
+      return *this;
+  }
+  
+  Sharedptr (Sharedptr<T>&& newres)
+  {
+      res=newres.res;                 // No need to increment or decrement the count 
+      count=newres.count;             // As in constr new object is yet to be created so there is no any already created resource is there
+      newres.res=nullptr;             // Thats why no need to decrement 
+      newres.count=nullptr;           // And for the newres we are adding 1 new and deleting existing so it is balanced
+  }
+  
+  Sharedptr& operator=(Sharedptr<T>&& newres)
+  {
+      if(this!= &newres)
+      {
+         decrementcount();               // Need to decrement as in move operator object is already created so need to decrement created object
+         res=newres.res;                 // But No need to increment the count 
+         count=newres.count;             // As for the newres we are adding 1 new and deleting existing so it is balanced
+         newres.res=nullptr;
+         newres.count=nullptr;
+      }
+      return *this;
+  }
+  
+  int getcount()
+  {
+      if(count)
+      {
+          std::cout << "Count =" << *count << std::endl;
+          return *count;
+      }
+      return -1;
+  }
+  
+  void reset(T* newres=nullptr)
+  {
+      decrementcount(); 
+      res=newres;
+      count=new int(1);
+  }
+  
+  T* operator->()
+  {
+      return res;
+  }
+  
+  T& operator*()
+  {
+      return *res;
+  }
+  
+  T* get()
+  {
+      return res;                   
+  }
+  
+  ~Sharedptr()
+  {
+      decrementcount();
+  }
+};
+
+int main()
+{
+   Sharedptr<int> ptr1= (new int(20));
+   ptr1.getcount();
+   Sharedptr<int> ptr2= ptr1;
+   Sharedptr<int> ptr3= (new int(20));
+   ptr2=ptr3;
+   
+   Sharedptr<int> ptr4=std::move(ptr2);
+   ptr4=std::move(ptr1);
+   ptr4.getcount();
+   ptr2.get();
+   ptr2.reset();
+   ptr2.reset(new int (5));
+   ptr4.getcount();
+   
+   return 0;
+}
