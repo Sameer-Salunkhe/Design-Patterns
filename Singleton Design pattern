@@ -4,6 +4,37 @@
 // 3. delete copy constructor and operator on order to maintain single instance of the class i.e singleton obj1=obj2; return obj2;
 
 
+
+class Singleton {
+  
+private:
+  // Private constructor to prevent direct instantiation
+  Singleton() {}
+  
+  // Delete copy constructor and assignment operator
+  Singleton(const Singleton&) = delete;
+  Singleton& operator=(const Singleton&) = delete;
+
+public:
+  // Static method to get the Singleton instance
+  static Singleton& getInstance() {
+    static Singleton instance;  // Guaranteed to be created only once
+    return instance;
+  }
+
+  void printSingleton() {
+    std::cout << "PRINT SINGLETON" << std::endl;
+  }
+};
+
+int main() {
+  // Access Singleton instance and call the method
+  Singleton::getInstance().printSingleton();
+  
+  return 0;
+}
+
+
 class singleton{
                                                                                                           
   private:
