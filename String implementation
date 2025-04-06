@@ -1,0 +1,117 @@
+
+#include <iostream>
+#include <cstring> // for strlen, strcpy
+#include <utility> // for std::swap
+
+using namespace std;
+
+class String{
+    private:
+    char *res;
+    unsigned int len;
+    
+    public:
+    
+    String():res(nullptr),len(0){}     // constructor
+    
+    String(const char *ch){         // parameterised constructor
+         len=strlen(ch);
+        res= new char[len+1];      // size+1 for null terminator '\0'
+        strcpy(res,ch); 
+    } 
+    
+    String(const String& other){         // copy constructor
+        len=other.len;
+        res= new char[len+1];
+        strcpy(res,other.res); 
+    }  
+    
+    String& operator= (const String& other)   // one way to do this 
+    {                                         // but here we are not considering that if for some reason the memory allocation failed then what we will do
+        if(this!= &other)
+        {
+            delete[] res;
+            len=strlen(other);
+            res=new char[len+1];
+        }
+        return *this;
+    }
+    
+    String& operator= (String other)
+    {
+        Swap(*this,other);
+        return *this;                      // CAS Idioms
+    }
+    
+    friend void Swap(String& str1, String& str2) noexcept    // friend word marked here for STL call
+    {                                                        // STL operation like sorting takes place STL look for swap
+        std::swap(str1.res,str2.res);                        // if not mrked as friend then it is like object.swap() or this->swap();
+        std::swap(str1.len,str2.len);      
+    }
+    
+    unsigned int length() const
+    {
+        return len;
+    }
+    
+    String(String&& other) noexcept : res(other.res), len(other.len) {    // Move constructor
+        other.res = nullptr;
+        other.len = 0;
+    }
+
+    String& operator= (String&& other) noexcept              // Move assignment operator
+    {
+        if(this!= &other)
+        {
+            delete[] res;
+            len=other.len;
+            res=other.res;
+            other.res=nullptr;
+            other.len=0;
+        }
+        return *this;
+    }
+    
+      // Destructor
+    ~String() {
+        delete[] res;
+    }
+    
+    friend ostream& operator << ( ostream& out,const String& str);
+    friend istream& operator >> ( istream& in, String& str);
+    
+};
+
+ ostream& operator << ( ostream& out,const String& str)    // not to use const for ostram as ostream is a stream that gets modified when you write to it.
+ {
+   if(str.res) out << str.res;     // if check to prevent crash or garbage value print if str.res is empty
+    return out;
+ }
+ 
+  istream& operator>>(istream& in, String& str) {
+    char buffer[1000]; // Use a fixed buffer for demo purposes
+    in >> buffer;
+    delete[] str.res;
+    str.len = strlen(buffer);
+    str.res = new char[str.len + 1];
+    strcpy(str.res, buffer);
+    return in;
+}
+
+int main() {
+    
+   String str1;  // constructor
+   String str2="Hello"; // parameterised constructor
+   
+   String str3=str2; // copy constructor
+   str1=str2; // copy assignment operator
+   
+   int len= str.length();
+   
+   cout << str1;  // << operator overloading
+   cin >> str2;
+   
+   String str4= std::move(str3);   // move constructor
+ 
+    return 0;
+}
