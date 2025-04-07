@@ -1,0 +1,87 @@
+
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Employee {
+private:
+
+	string _name;
+	string _position;
+	vector <Employee*> _vec;
+	Employee* manager;
+public:
+
+	Employee(string name,string position): _name(name),_position(position) {
+		manager=nullptr;
+		_vec= {};
+	}
+
+	void addreportee(Employee* input)
+	{
+		input->manager=this;
+		_vec.push_back(input);
+	}
+
+	void print()
+	{
+		std::cout << " Name =" << _name << std::endl;
+		if(manager==NULL) return;
+		manager->print();
+	}
+
+	void printnext()
+	{
+		if(manager==NULL)
+		{
+			std::cout << " Name =" << _name << std::endl;
+			return;
+		}
+		manager->printnext();
+		std::cout << " Name =" << _name << std::endl;
+	}
+
+	void printprev()
+	{
+		std::cout << " Name =" << _name << std::endl;
+		if(_vec.size()==0) return;
+
+		_vec[0]->printprev();
+	}
+};
+
+int main()
+{
+	Employee *CEO = new Employee("BC","CEO");
+	Employee *Director = new Employee("Pragyesh","Director");
+
+	Employee *PeopleManeger = new Employee("Dinesh","PeopleManeger");
+	Employee *Maneger = new Employee("Rakesh","Maneger");
+
+	Employee *Sameer = new Employee("Sameer","Employee");
+	Employee *Dhiraj = new Employee("Dhiraj","Employee");
+
+	Employee *Test01 = new Employee("Test01","Employee");
+	Employee *Test02 = new Employee("Test02","Employee");
+
+	CEO -> addreportee(Director);
+
+	Director -> addreportee(PeopleManeger);
+	Director -> addreportee(Test01);
+	Director -> addreportee(Test02);
+
+	PeopleManeger -> addreportee(Maneger);
+	Maneger -> addreportee(Sameer);
+	Maneger -> addreportee(Dhiraj);
+
+	Sameer-> print();
+	std::cout << " ----------------" << std::endl;
+	Sameer-> printnext();
+	std::cout << " ----------------" << std::endl;
+	CEO -> printprev();
+
+
+	return 0;
+}
