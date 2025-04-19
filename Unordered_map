@@ -1,0 +1,140 @@
+
+#include <iostream>
+#include <memory>
+#include <string>
+#include <mutex>
+#include <vector>
+
+struct Node{
+    int val;
+    Node * next;
+    Node(int input):val(input),next(nullptr){}
+};
+
+class LinkList{
+  private:
+  Node *head;
+  
+  public:
+  LinkList(){
+      head=nullptr;     
+  }
+  
+  void Append(int value)
+  {
+      Node *newNode = new Node(value);
+      
+      if(head==nullptr)
+      {
+          head=newNode;   
+          return;
+      }
+      
+      if(value <= head->val) 
+      {
+          newNode->next=head;
+          head = newNode;
+          return;
+      }     
+      
+      Node *temp= head;
+      
+      while(temp->next !=nullptr && value > temp->next->val)
+      {
+          temp=temp->next;
+      }
+      
+      newNode->next=temp->next;
+      temp->next = newNode;
+  }
+  
+  int search (int value){
+      
+      Node *temp= head;
+      
+      while(temp!=nullptr)
+      {
+        if(temp->val==value) return 1;
+        temp=temp->next;
+      }
+      
+      return -1;
+  }
+  
+  void print(){
+      if (head==nullptr)  std::cout << "NO MEMBER" ;
+      Node *temp= head;
+      
+      while(temp!=nullptr)
+      {
+        std::cout << temp->val << "," ;
+        temp=temp->next;
+      }
+  }
+  
+};  
+
+int Size=10;
+
+int hash(int value)
+{
+    return value% Size;
+}
+
+void insert(std::vector<LinkList>& vec,int value){
+    
+    int index= hash(value);
+    
+    LinkList& temp= vec[index];
+    
+    temp.Append(value);
+    
+    std::cout << "Value Inserted = " << value << std::endl;
+}
+
+int search(std::vector<LinkList>& vec,int value){
+    
+    int index= hash(value);
+    
+    LinkList& temp= vec[index];
+    
+    return temp.search(value);
+}
+
+
+int main()
+{
+   std::vector<LinkList> vec;
+   
+   for(int i=0;i<Size;i++)
+   {
+       LinkList L;
+       vec.push_back(L);
+   }
+   
+   insert(vec,20);
+   insert(vec,15);
+   insert(vec,30);
+   insert(vec,41);
+   insert(vec,42);
+   insert(vec,43);
+   insert(vec,44);
+   
+   if (search(vec, 41) ==1 )
+    {
+        std::cout << "Found the key: 41" << std::endl;
+    }
+    else
+    {
+        std::cout << "Not Found the key: 41" << std::endl;
+    }
+   
+    
+    for(int i=0;i<Size;i++)
+   {
+      vec[i].print();
+      std::cout  << std::endl;
+   }
+
+ return 0;
+}
