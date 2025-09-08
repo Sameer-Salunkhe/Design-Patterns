@@ -1,0 +1,55 @@
+#include <thread>
+#include <iostream>
+#include <semaphore>
+#include <mutex>
+
+int count = 0;
+int readcount = 0;
+
+std::mutex m1;
+
+std::binary_semaphore write_sem(1);
+
+void readr(int id)
+{
+    m1.lock();
+    readcount++;
+    if(readcount==1)
+     write_sem.acquire();
+    m1.unlock();
+    
+    std::cout << "Reading the value ID = " << id << count << std::endl;
+    
+    m1.lock();
+    readcount--;
+    if(readcount==0)
+     write_sem.release();
+    m1.unlock();
+}
+
+void writer (int id)
+{
+    write_sem.acquire();
+    count++;
+    std::cout << "Writing the value ID = " << id << std::endl;
+    write_sem.release();
+}
+
+int main()
+{
+    std::cout<<"Hello World"<< std::endl;
+    
+    std::thread t1(writer,1);
+    std::thread t2(readr,2);
+    std::thread t3(readr,3);
+    std::thread t4(writer,4);
+    
+    t1.join();
+    t2.join();
+    t3.join();
+    t4.join();
+    
+    return 0;
+}
+
+
